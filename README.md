@@ -7,4 +7,4 @@
 - Get inside auto-ml.
 - In the terminal type in: `python3 V1.py`
 
-Version: 10.00.20200515
+# Version: 10.00.20200515
