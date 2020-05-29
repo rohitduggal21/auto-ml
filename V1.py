@@ -3,10 +3,10 @@ from werkzeug.utils import secure_filename
 import os
 from con_util import *
 
-UPLOAD_FOLDER = '/home/rohit/Desktop/UI/uploads'
+UPLOAD_FOLDER = '/uploads'
 ALLOWED_EXTENSIONS = {'csv'}
 app = Flask(__name__)
-app.config['SECRET_KEY'] = 'abcdefg1234567'
+app.config['SECRET_KEY'] = #some secret key
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 
 def allowed_file(filename):
