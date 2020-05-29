@@ -1,0 +1,938 @@
+<html>
+<head>
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+<link href="/static/css/multi-select.css" media="screen" rel="stylesheet" type="text/css">
+</head>
+<style>
+.m-auto{margin-left:auto;margin-right:auto;}
+.hidden{display:none;}
+</style>
+<body style='padding-top:30px;'>
+
+<!-- MAIN TAB CONTAINER-->
+<div class="card text-center m-auto" style='width:1200px;'>
+ 	<!-- HEADER -->
+	<div class="card-header bg-primary text-white">ML-TOOL</div>
+		<!-- MAIN TABS -->
+		<div class="card-header">
+    		<ul class="nav nav-tabs card-header-tabs" id="myTab" role="tablist">
+      			<li class="nav-item">
+    				<a class="nav-link active" id="train-tab" data-toggle="tab" href="#train" role="tab" aria-controls="train" aria-selected="true">Train</a>
+  	  			</li>
+  	 			<li class="nav-item">
+    				<a class="nav-link" id="test-tab" data-toggle="tab" href="#test" role="tab" aria-controls="test" aria-selected="false">Test</a>
+  	 			</li>
+  				<li class="nav-item">
+    				<a class="nav-link" id="predict-tab" data-toggle="tab" href="#predict" role="tab" aria-controls="predict" aria-selected="false">Predict</a>
+  				</li>
+    		</ul>
+		</div>
+		<!-- MAIN TABS CONTENT -->
+		<div class="tab-content" id="myTabContent">
+			<!-- TRAIN TAB -->
+			<div class="card-body tab-pane show active" id="train" role="tabpanel" aria-labelledby="train-tab">
+				<div class="row pr-3">
+					<div class="col-2">
+						<div class="list-group" id="list-tab" role="tablist">
+							<a class="list-group-item list-group-item-action active p-4" id="list-source-list" data-toggle="list" href="#list-source" role="tab" aria-controls="source">Source</a>
+							<a class="list-group-item list-group-item-action p-4" id="list-ft-list" data-toggle="list" href="#list-ft" role="tab" aria-controls="profile">FeatureTools</a>
+							<a class="list-group-item list-group-item-action p-4 disabled" id="list-data-list" data-toggle="list" href="#list-data" role="tab" aria-controls="home">Data</a>
+							<a class="list-group-item list-group-item-action p-4 disabled" id="list-profile-list" data-toggle="list" href="#list-profile" role="tab" aria-controls="profile">Processing</a>
+							<a class="list-group-item list-group-item-action p-4 disabled" id="list-messages-list" data-toggle="list" href="#list-messages" role="tab" aria-controls="messages">Models</a>
+    					</div>
+					</div>
+  					<div class="col-10 p-0 border">
+    					<div class="tab-content w-100" id="nav-tabContent">
+      						<div class="tab-pane fade show active" id="list-source" role="tabpanel" aria-labelledby="list-source-list">
+								<div class="container w-50" style='margin-top:90px;'>
+  									<div class="row">
+    									<div class="col-sm">
+      										<button type="button" id='b_redshift' class="btn btn-primary p-4" data-toggle="modal" data-target="#exampleModalCenter_1" style='width:160px;'>
+  											RedShift
+	  										</button>
+    									</div>
+    									<div class="col-sm">
+      										<button type="button" id='b_bigquery' class="btn btn-primary p-4" data-toggle="modal" data-target="#exampleModalCenter" style='width:160px;'>
+  											BigQuery
+	  										</button>
+    									</div>
+  		   							</div>
+  	   	   							<div class="row mt-2">
+    		 							<div class="col-sm">
+      										<button type="button" id='b_postgres' class="btn btn-primary p-4" data-toggle="modal" data-target="#exampleModalCenter" style='width:160px;'>
+  											PostgresSQL
+	  										</button>
+    									</div>
+    									<div class="col-sm">
+      										<button type="button" id='b_csv' class="btn btn-primary p-4" data-toggle="modal" data-target="#exampleModalCenter_4" style='width:160px;'>
+  											CSV
+	  										</button>
+    									</div>
+  	 	  							</div>
+	   							</div>
+								<!-- CSV Modal -->
+								<div class="modal fade" id="exampleModalCenter_4" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+  									<div class="modal-dialog" role="document">
+    									<div class="modal-content">
+      										<div class="modal-header">
+        										<h5 class="modal-title" id="exampleModalLongTitle">Select Files</h5>
+        										<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          											<span aria-hidden="true">&times;</span>
+        										</button>
+      										</div>
+      										<div class="modal-body">
+												<div class="container">
+													<div class="row">
+														<div class="col-10 p-0">
+															<table class="table table-sm w-100 mb-0">
+																<tbody id='t1'>
+																</tbody>
+															</table>
+														</div>
+													</div>
+													<form method="POST" enctype="multipart/form-data" style='margin:0px;'>
+														<div class="row mt-2">
+  															<div class="col-10">
+    															<input name="file" type="file" class="custom-file-input" id="file_1" required>
+    															<label class="custom-file-label" for="file_1">Choose file</label>
+  															</div>
+															<div class='col-2'>
+																<img id='load_1' style='height:38px;' src="/static/loader.gif" class="ml-2 rounded mx-auto img-thumbnail hidden">
+    															<button id="upload-file-btn" style='width:64px;' type="button" class="btn btn-primary" onclick="upload('file_1','t1',on_click_hide=[this.id],on_click_show=['load_1'],after_res_hide=['load_1'],after_res_show=[this.id])">Add</button>
+															</div>
+														</div>
+													</form>
+												</div>
+      										</div>
+      										<div class="modal-footer">
+												<div id='err_2' class="alert alert-danger p-2 hidden" role="alert">
+  													Couldn't Connect!
+												</div>
+												<img id='load_3' style='height:35px;width:35px;' src="/static/loader.gif" class="rounded img-thumbnail hidden">
+        										<button id='csv_b_1' type="button" class="btn btn-primary" onclick="get_columns(err_div='err_2',on_click_show=['load_3'],on_click_hide=['csv_b_1'],after_res_show=[],after_res_hide=['load_3'],after_fail_show=['csv_b_1'],after_fail_hide=['load_3'],to_enable=['list-data-list'],to_disable=['b_bigquery','b_postgres','b_redshift'])">Done</button>
+      										</div>
+    									</div>
+  									</div>
+								</div>
+								<!-- CSV MODAL ENDS -->
+								<!-- REDSHIFT MODAL -->
+								<div class="modal fade" id="exampleModalCenter_1" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+  									<div class="modal-dialog" role="document">
+    									<div class="modal-content">
+      										<div class="modal-header">
+        										<h5 class="modal-title" id="exampleModalLongTitle">Add Tables</h5>
+        										<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          											<span aria-hidden="true">&times;</span>
+        										</button>
+      										</div>
+      										<div class="modal-body">
+
+												<ul class="nav nav-tabs" id="myTab_redshift" role="tablist">
+  													<li class="nav-item">
+    													<a class="nav-link active" id="connection-tab" data-toggle="tab" href="#connect" role="tab" aria-controls="connect" aria-selected="true">Connection</a>
+  													</li>
+  													<li class="nav-item">
+    													<a class="nav-link disabled" id="data-tab" data-toggle="tab" href="#data" role="tab" aria-controls="data" aria-selected="false">Tables</a>
+  													</li>
+												</ul>
+												<div class="tab-content" id="myTabContent_redshift">
+  													<div class="tab-pane fade show active" id="connect" role="tabpanel" aria-labelledby="connect-tab">
+														<div class="input-group mt-4">
+  															<div class="input-group-prepend">
+    															<span class="input-group-text" id="basic-addon1">Host</span>
+  															</div>
+  															<input id='host_1' type="text" class="form-control text-center" aria-label="Host" aria-describedby="basic-addon1" autocomplete="off">
+														</div>
+														<div class="input-group mt-2">
+  															<div class="input-group-prepend">
+    															<span class="input-group-text" id="basic-addon1">Port</span>
+  															</div>
+  															<input id='port_1' type="number" value='5439' class="form-control text-center" aria-label="Host" aria-describedby="basic-addon1" autocomplete="off">
+														</div>
+														<div class="input-group mt-2">
+  															<div class="input-group-prepend">
+    															<span class="input-group-text" id="basic-addon1">Database</span>
+  															</div>
+  															<input id='database_1' type="text" class="form-control text-center" aria-label="Host" aria-describedby="basic-addon1" autocomplete="off">
+														</div>
+														<div class="input-group mt-2">
+  															<div class="input-group-prepend">
+    															<span class="input-group-text" id="basic-addon1">User</span>
+  															</div>
+  															<input id='user_1' type="text" class="form-control text-center" aria-label="Host" aria-describedby="basic-addon1" autocomplete="off">
+														</div>
+														<div class="input-group mt-2">
+  															<div class="input-group-prepend">
+    															<span class="input-group-text" id="basic-addon1">Password</span>
+  															</div>
+  															<input id='password_1' type="password" class="form-control text-center" aria-label="Host" aria-describedby="basic-addon1" autocomplete="off">
+														</div>
+													</div>
+  													<div class="tab-pane fade" id="data" role="tabpanel" aria-labelledby="data-tab">
+														<table class="table table-sm w-100 mt-3 mb-0">
+															<tbody id='t2'>
+															</tbody>
+														</table>
+														<div class="input-group mt-2">
+  															<div class="input-group-prepend">
+    															<span class="input-group-text" id="basic-addon1">Schema</span>
+  															</div>
+  															<select id='schema_1' class="form-control" onchange="add_table(this,err_div='err_1',on_click_show=['load_2'],on_click_hide=[],after_res_show=['show_tables_1'],after_res_hide=['load_2'],after_fail_show=[],after_fail_hide=[],populate={'table_1':'tables'})">
+																<option value=''>Select</option>
+															</select>
+														</div>
+														<div id='show_tables_1' class="row mt-2 hidden">
+  															<div class="col-8">
+    															<div class="input-group">
+  																	<div class="input-group-prepend">
+    																	<span class="input-group-text" id="basic-addon1">Table</span>
+  																	</div>
+  																	<select id='table_1' class="form-control">
+																	</select>
+																</div>
+  															</div>
+															<div class='col-2 pl-1'>
+    															<button id="red_b_1" type="button" class="btn btn-primary pl-3 pr-3" onclick="update_table(t_id='t2',msg=document.getElementById('table_1').value,which='normal',status=true)">ADD</button>
+															</div>
+															<div class='col-2 pl-1'>
+    															<button id="red_b_2" type="button" class="btn btn-primary pl-3 pr-3" onclick="get_columns(err_div='err_1',on_click_show=['load_2'],on_click_hide=[],after_res_show=[],after_res_hide=['load_2'],after_fail_show=[],after_fail_hide=['load_2'],to_enable=['list-data-list'],to_disable=['red_b_1','red_b_2'])">FIN</button>
+															</div>
+														</div>
+													</div>
+												</div>
+      										</div>
+      										<div class="modal-footer">
+												<div id='err_1' class="alert alert-danger p-2 hidden" role="alert">
+  													Couldn't Connect!
+												</div>
+												<img id='load_2' style='height:35px;width:35px;' src="/static/loader.gif" class="rounded img-thumbnail hidden">
+												<button id='c1' type="button" class="btn btn-primary" onclick="connect(ids=['host_1','port_1','database_1','user_1','password_1'],source='redshift',err_div='err_1',on_click_hide=[],on_click_show=['load_2'],after_res_hide=['load_2','c1'],after_res_show=[],after_fail_hide=['load_2'],after_fail_show=['c1'],to_enable=['data-tab'],to_disable=['b_bigquery','b_postgres','b_csv'],populate={'schema_1':'schemas'})">Connect</button>
+        										<button type="button" class="btn btn-primary hidden">Done</button>
+      										</div>
+    									</div>
+  									</div>
+								</div>
+								<!-- REDSHIFT MODAL ENDS -->
+  							</div>
+							<!-- FEATURE-TOOLS START -->
+	  						<div class="tab-pane fade" id="list-ft" role="tabpanel" aria-labelledby="list-ft-list">
+								<div class="card text-center border-0 h-100">
+  									<div class="card-header">
+    									<ul class="nav nav-tabs card-header-tabs">
+      										<li class="nav-item">
+        										<a class="nav-link active" data-toggle="tab" href="#parent" role="tab" aria-controls="parent" aria-selected="true">Parent</a>
+      										</li>
+      										<li class="nav-item">
+        										<a class="nav-link" data-toggle="tab" href="#child-tab" role="tab" aria-controls="child-tab" aria-selected="false">Children</a>
+      										</li>
+											<!--
+											<li class="nav-item p-0">
+        										<a class="nav-link disabled" style='padding:0px;padding-top:7px;'>
+													<img id='tick' style='height:25px;width:25px;' src="/static/tick.png" class="rounded img-thumbnail hidden">
+													<img id='close' style='height:25px;width:25px;' src="/static/close.png" class="rounded img-thumbnail hidden">
+													<img id='load_4' style='height:25px;width:25px;' src="/static/loader.gif" class="rounded img-thumbnail hidden">
+												</a>
+      										</li>
+											-->
+    									</ul>
+  									</div>
+									<div class="tab-content">
+										<!-- PARENT TAB -->
+  										<div class="tab-pane fade show active" id="parent" role="tabpanel" aria-labelledby="parent-tab">
+											<div class="row pr-3 pl-3 pt-3" style='height:310px;'>
+  												<div class="col-sm-6 h-100">
+    												<div class="card" style='height:278px;'>
+      													<div class="card-body">
+        													<div class="input-group mt-3">
+  																<div class="input-group-prepend">
+    																<span class="input-group-text">Data</span>
+  																</div>
+  																<select class="form-control" id="parent_datasets" onchange="drop_down_populate(value=this.value,{'key_list':datasets[this.value],'target':datasets[this.value],'agg_by':datasets[this.value],'split_by':datasets[this.value],'columns_ft_transform':datasets[this.value]})">
+																	<option value=''>Select</option>
+    															</select>
+															</div>
+															<div class="input-group mt-3">
+  																<div class="input-group-prepend">
+    																<span class="input-group-text">Key</span>
+  																</div>
+  																<select class="form-control" id="key_list">
+    															</select>
+															</div>
+															<div class="input-group mt-3">
+  																<div class="input-group-prepend">
+    																<span class="input-group-text">Target</span>
+  																</div>
+  																<select class="form-control" id="target">
+    															</select>
+															</div>
+															<div class="input-group mt-3">
+  																<div class="input-group-prepend">
+    																<span class="input-group-text">max_depth</span>
+  																</div>
+  																<input id='max_depth' style='text-align:center;' type="number" value=2 class="form-control text-center" aria-describedby="basic-addon1">
+															</div>
+      													</div>
+    												</div>
+  												</div>
+  												<div class="col-sm-6 h-100">
+    												<div class="card" style='height:278px;'>
+      													<div class="card-body">
+															<div class="input-group mt-3">
+  																<div class="input-group-prepend">
+    																<span class="input-group-text">Agg</span>
+  																</div>
+  																<select class="form-control border-right-0" id="agg">
+																	<option value='N'>No</option>
+																	<option value='Y'>Yes</option>
+    															</select>
+																<div class="input-group-prepend">
+    																<span class="input-group-text">By</span>
+  																</div>
+																<select class="form-control" id="agg_by">
+    															</select>
+															</div>
+   															<div class="input-group mt-3">
+																<button type="button" class="btn btn-info w-100" data-toggle="modal" data-target="#train-modal">TRAINING WINDOW</button>
+															</div>
+															<div class="input-group mt-3">
+																<div class='row pl-3'>
+																	<div class='col p-0'>
+																		<button type="button" class="btn btn-info" style='width:180px;' data-toggle="modal" data-target="#transform-modal">TRANSFORMS</button>
+																	</div>
+																	<div class='col p-0' style='margin-left:54px;'>
+																		<button id='done_parent' onclick="parent_add()" type="button" class="btn btn-info" style='width:180px;'>DONE</button>
+																	</div>
+																</div>
+															</div>
+														    <div class="input-group mt-3">
+																<div class="alert alert-primary p-1 w-100" role="alert">
+  																	NOTE: Ignore <strong>By</strong> if <strong>Agg = No</strong>
+																</div>
+															</div>
+      													</div>
+    												</div>
+  												</div>
+											</div>
+										</div>
+										<!-- TRAIN-WINDOW MODAL -->
+										<div class="modal fade" id="train-modal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  											<div class="modal-dialog" role="document">
+    											<div class="modal-content">
+      												<div class="modal-header">
+        												<h5 class="modal-title" id="exampleModalLabel">Training Window</h5>
+        												<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          													<span aria-hidden="true">&times;</span>
+        												</button>
+      												</div>
+      												<div class="modal-body">
+														<div class="input-group">
+  															<div class="input-group-prepend">
+    															<div class="input-group-text">
+    																<input id='date-range' type="radio" name='ft-train' aria-label="default" onclick="execute([click_add_remove('train-ratio',0), click_add_remove('train-date',1), click_add_remove('train-date-by',1)])">
+    															</div>
+  															</div>
+  															<input type="text" value='Date Range' class="form-control" readonly>
+														</div>
+														<div class="input-group mt-2 hidden" id='train-date'>
+  															<input id='train_window_1' type="date" class="form-control border-right-0" aria-describedby="basic-addon1">
+															<div class="input-group-prepend">
+    															<span class="input-group-text">to</span>
+  															</div>
+															<input id='train_window_2' type="date" class="form-control" aria-describedby="basic-addon1">
+														</div>
+														<div class="input-group mt-2 hidden" id='train-date-by'>
+															<div class="input-group-prepend">
+    															<span class="input-group-text">By</span>
+  															</div>
+															<select class="form-control" id="split_by">
+    														</select>
+														</div>
+														<div class="input-group mt-2">
+  															<div class="input-group-prepend">
+    															<div class="input-group-text">
+    																<input type="radio" id='ratio' name='ft-train' aria-label="default" onclick="execute([click_add_remove('train-ratio',1), click_add_remove('train-date',0), click_add_remove('train-date-by',0)])" checked>
+    															</div>
+  															</div>
+  															<input type="text" value='Ratio' class="form-control" readonly>
+														</div>
+														<div class="input-group mt-2" id='train-ratio'>
+															<input id='ratio-val' type="number" value='0.7' class="form-control text-center">
+														</div>
+      												</div>
+    											</div>
+  											</div>
+										</div>
+										<!-- TRANSFORM-MODAL -->
+										<div class="modal fade" id="transform-modal" tabindex="-1" role="dialog" aria-labelledby="transform-modal" aria-hidden="true">
+  											<div class="modal-dialog" role="document">
+    											<div class="modal-content">
+      												<div class="modal-header">
+        												<h5 class="modal-title" id="exampleModalLabel">Transforms</h5>
+        												<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          													<span aria-hidden="true">&times;</span>
+        												</button>
+      												</div>
+      												<div class="modal-body">
+														<div class="input-group">
+  															<div class="input-group-prepend">
+    															<div class="input-group-text">
+    																<input type="radio" id='default_transform_id' name='ft-parent-transform' aria-label="default" onclick="execute([click_add_remove('default_ft_transform',1), click_add_remove('advance_ft_transform',0),initiate_feature_en()])" autocomplete="off" checked>
+    															</div>
+  															</div>
+  															<input type="text" value='Default' class="form-control" readonly>
+														</div>
+														<div class="input-group mt-2" id='default_ft_transform'>
+  															<select multiple="multiple" id='ft-transform' class='multi-select' style='margin-left:10px;'>
+																<option value="*">All</option>
+																<option selected='selected' value='day'>day</option>
+																<option selected='selected' value='year'>year</option>
+																<option selected='selected' value='month'>month</option>
+																<option selected='selected' value='weekday'>weekday</option>
+																<option selected='selected' value='haversine'>haversine</option>
+																<option selected='selected' value='num_words'>num_words</option>
+																<option selected='selected' value='num_characters'>num_characters</option>
+    														</select>
+														</div>
+														<div class="input-group mt-2">
+  															<div class="input-group-prepend">
+    															<div class="input-group-text">
+    																<input type="radio" id='custom_transform_id' name='ft-parent-transform' onclick="execute([click_add_remove('default_ft_transform',0), click_add_remove('advance_ft_transform',1),initiate_feature_en()])" aria-label="advance" autocomplete="off">
+    															</div>
+  															</div>
+  															<input type="text" value='Custom' class="form-control" readonly>
+														</div>
+														<div class="input-group mt-2 hidden" id='advance_ft_transform'>
+															<div class='col p-0'>
+																<select class="form-control w-100" id="columns_ft_transform">
+    															</select>
+															</div>
+															<div class='col p-0 pl-2'>
+																<select class="form-control w-100" id="parent_ft_transforms">
+    															</select>
+															</div>
+															<div class='col p-0 pl-2'>
+																<button onclick="update_table_ft(t_id='t3',entity=document.getElementById('parent_datasets').value,column=document.getElementById('columns_ft_transform').value,primitive=document.getElementById('parent_ft_transforms').value,agg_or_trans='trans_primitives')" type="button" class="btn btn-info w-100">ADD</button>
+															</div>
+															<table class="table table-sm w-100 mt-2 mb-0">
+																<tbody id='t3'>
+																</tbody>
+															</table>
+														</div>
+      												</div>
+    											</div>
+  											</div>
+										</div>										
+										<!-- CHILD TAB -->
+  										<div class="tab-pane fade" id="child-tab" role="tabpanel" aria-labelledby="parent-tab">
+											<div class="input-group border-bottom pt-2 pb-2 pl-4 pr-4">
+												<div class="input-group-prepend"  style='margin-left:190px;'>
+    												<span class="input-group-text">Data</span>
+  												</div>
+												<select class="form-control" id="child_datasets" style='margin-right:40px;'>
+    											</select>
+												<button onclick="" type="button" class="btn btn-info" style='width:120px;margin-right:190px;'>DONE</button>
+											</div>
+											<!-- CHILD DATASETS -->
+											<div id='child_datasets'>
+											<div>
+												<div class='input-group mt-3' style='padding-left:214px;padding-right:374px;'>
+  													<div class='input-group-prepend'>
+    													<span class='input-group-text'>Key</span>
+  													</div>
+  													<select class='form-control' id='key_list_child'>
+    												</select>
+												</div>
+												<div class='input-group mt-2' style='padding-left:214px;padding-right:374px;'>
+  													<div class='input-group-prepend'>
+    													<span class='input-group-text'>Relation</span>
+  													</div>
+  													<select class='form-control' id='relation'>
+    												</select>
+												</div>
+												<div class='input-group mt-2' style='padding-left:214px;padding-right:374px;'>
+  													<div class='input-group-prepend'>
+    													<span class='input-group-text'>Link</span>
+  													</div>
+  													<select class='form-control' id='link'>
+    												</select>
+												</div>
+												<div class='input-group mt-2' style='padding-left:214px;padding-right:374px;'>
+  													<div class='input-group-prepend'>
+    													<span class='input-group-text'>Split</span>
+  													</div>
+  													<select class='form-control border-right-0' id='split_child'>
+														<option value='N'>No</option>
+														<option value='Y'>Yes</option>
+    												</select>
+													<div class='input-group-prepend'>
+    													<span class='input-group-text'>By</span>
+  													</div>
+													<select class='form-control' id='split_by_child'>
+    												</select>
+												</div>
+												<div class='input-group mt-2' style='padding-left:214px;padding-right:374px;'>
+													<button type='button' class='btn btn-info w-100' data-toggle='modal' data-target='#agg-modal'>AGGREGATIONS</button>
+												</div>
+												<div class='modal fade' id='agg-modal' tabindex='-1' role='dialog' aria-labelledby='agg-modal' aria-hidden='true'>
+  													<div class='modal-dialog' role='document'>
+    													<div class='modal-content'>
+      														<div class='modal-header'>
+        														<h5 class='modal-title' id='exampleModalLabel'>Aggregations</h5>
+        														<button type='button' class='close' data-dismiss='modal' aria-label='Close'>
+          															<span aria-hidden='true'>&times;</span>
+        														</button>
+      														</div>
+      														<div class='modal-body'>
+																<div class='input-group'>
+  																	<div class='input-group-prepend'>
+    																	<div class='input-group-text'>
+    																		<input type='radio' name='ft-control-agg' aria-label='default' onclick="execute([click_add_remove('default_ft_agg',1), click_add_remove('advance_ft_agg',0)])" checked>
+    																	</div>
+  																	</div>
+  																	<input type='text' value='Default' class='form-control' readonly>
+																</div>
+																<div class='input-group mt-2' id='default_ft_agg'>
+  																	<select multiple='multiple' id='agg-transform' class='multi-select' style='margin-left:10px;'>
+																		<option value='*'>All</option>
+																		<option selected='selected' value='sum'>sum</option>
+																		<option selected='selected' value='std'>std</option>
+																		<option selected='selected' value='max'>max</option>
+																		<option selected='selected' value='skew'>skew</option>
+																		<option selected='selected' value='min'>min</option>
+																		<option selected='selected' value='mean'>mean</option>
+																		<option selected='selected' value='count'>count</option>
+																		<option selected='selected' value='percent_true'>percent_true</option>
+																		<option selected='selected' value='num_unique'>num_unique</option>
+																		<option selected='selected' value='mode'>mode</option>
+    																</select>
+																</div>
+																<div class='input-group mt-2'>
+  																	<div class='input-group-prepend'>
+    																	<div class='input-group-text'>
+    																		<input type="radio" id='custom-agg' name='ft-control-agg' onclick="execute([click_add_remove('default_ft_agg',0), click_add_remove('advance_ft_agg',1)])" aria-label='advance'>
+    																	</div>
+  																	</div>
+  																	<input type='text' value='Custom' class='form-control' readonly>
+																</div>
+																<div class='input-group mt-2 hidden' id='advance_ft_agg'>
+																	<div class='col p-0'>
+																		<select class='form-control w-100' id='columns_ft_agg'>
+    																	</select>
+																	</div>
+																	<div class='col p-0 pl-2'>
+																		<select class='form-control w-100'>
+    																	</select>
+																	</div>
+																	<div class='col p-0 pl-2'>
+																		<button onclick="update_table('t3',document.getElementById('parent_transforms').value+'('+document.getElementById('columns_ft_transform').value+')','normal',false)" type='button' class='btn btn-info w-100'>ADD</button>
+																	</div>
+																	<table class='table table-sm w-100 mt-2 mb-0'>
+																		<tbody id='t'>
+																		</tbody>
+																	</table>
+																</div>
+      														</div>
+    													</div>
+  													</div>
+												</div>
+											</div><!-- CHILD DATASETS END -->
+											</div>
+										</div>	
+									</div>
+  								</div>
+							</div>
+							<!-- FEATURE-TOOLS END -->
+      						<div class="tab-pane fade" id="list-messages" role="tabpanel" aria-labelledby="list-messages-list">...</div>
+      						<div class="tab-pane fade" id="list-settings" role="tabpanel" aria-labelledby="list-settings-list">...</div>
+    					</div>
+  					</div>
+				</div>
+			</div>
+  		</div>
+  		<div class="card-footer bg-primary text-white">10.00.20200515</div>
+</div>
+
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<script src="/static/js/jquery.multi-select.js" type="text/javascript"></script>
+<script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
+<script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+<script>
+var schema = '';
+var datasets = {};
+var default_transform_primitives = ['day', 'year', 'month', 'weekday', 'haversine', 'num_words', 'num_characters'];
+var default_agg_primitives = ['sum', 'std', 'max', 'skew', 'min', 'mean', 'count', 'percent_true', 'num_unique', 'mode'];
+var all_transform_primitives = ['absolute', 'and', 'multiply_numeric_scalar', 'negate', 'not_equal', 'year', 'cum_min', 'greater_than', 'haversine', 'less_than_equal_to_scalar', 'minute', 'modulo_numeric', 'subtract_numeric_scalar', 'time_since', 'greater_than_equal_to_scalar', 'is_weekend', 'multiply_boolean', 'not', 'not_equal_scalar', 'or', 'time_since_previous', 'cum_max', 'equal', 'greater_than_scalar', 'isin', 'modulo_numeric_scalar', 'scalar_subtract_numeric_feature', 'week', 'cum_sum', 'day', 'divide_numeric', 'add_numeric', 'less_than', 'percentile', 'weekday', 'diff', 'equal_scalar', 'greater_than_equal_to', 'is_null', 'modulo_by_feature', 'month', 'multiply_numeric', 'add_numeric_scalar', 'divide_numeric_scalar', 'cum_count', 'hour', 'latitude', 'less_than_scalar', 'num_characters', 'cum_mean', 'divide_by_feature', 'less_than_equal_to', 'longitude', 'num_words', 'second', 'subtract_numeric'];
+for (option of all_transform_primitives)
+	{
+		if (!default_transform_primitives.includes(option)) { addOption('ft-transform',option,option); }
+		addOption('parent_ft_transforms',option,option);
+	}
+var json = {};
+
+//$('.multi-select').multiSelect({cssClass:'m-auto'}); //{cssClass:'w-100'}
+$('#ft-transform').multiSelect({
+		cssClass:'m-auto',
+  		afterSelect: function(value){ afterSelect('ft-transform',value); },
+  		afterDeselect: function(value){ afterDeselect('ft-transform',value); }
+		})
+
+function afterSelect(id,value)
+	{
+		if($('#'+id).val().includes("*") && $('#'+id).val().length > 1)
+		{
+			if (value == "*")
+			{
+				$('#'+id).multiSelect('deselect_all');
+			}
+			else
+			{
+				$('#'+id).multiSelect('deselect',"*");
+			}
+		}
+	}
+		
+function afterDeselect(id,value)
+{
+	if($('#'+id).val().length == 0) { $('#'+id).multiSelect('select',"*"); }
+}
+
+var feature_en = {};
+function initiate_feature_en()
+{
+	feature_en = {'trans_primitives':[],'primitive_options':{}};
+}
+
+function generate_and_add_child(ver)
+{
+	if (ver == 0) {} //generate
+	else {} // add
+}
+
+function parent_add()
+{
+	var to_validate = ['parent_datasets','key_list','target','agg','agg_by','max_depth'];
+	if(document.getElementById('ratio').checked) { to_validate.push('ratio-val'); }
+	else { to_validate.push('train_window_1','train_window_2'); }
+	if(validate(to_validate))
+	{
+		if (document.getElementById('default_transform_id').checked)
+		{
+			if ($('#ft-transform').val().includes('*'))
+			{
+				feature_en['trans_primitives'] = all_transform_primitives;
+			}
+			else
+			{
+				feature_en['trans_primitives'] = $('#ft-transform').val();
+			}
+		}
+		if (Object.keys(datasets).length > 1)
+		{
+			alert('There are Child datasets!');
+		}
+	}
+	else
+	{
+		alert('incomplete');
+	}
+}
+
+function del_elem(arr,elem)
+{
+	var result = [];
+	for (option of arr)
+	{
+		if (option != elem) { result.push(option); }
+	}
+	return result;
+}
+
+function update_feature_en(entity,column,primitive,agg_or_trans)
+{
+	feature_en[agg_or_trans] = del_elem(feature_en[agg_or_trans],primitive);
+	feature_en['primitive_options'][primitive]['include_variables'][entity] = del_elem(feature_en['primitive_options'][primitive]['include_variables'][entity],column);
+	//alert(JSON.stringify(feature_en));
+}
+
+function update_table_ft(t_id,entity,column,primitive,agg_or_trans)
+{
+	if (!feature_en[agg_or_trans].includes(primitive))
+		{
+			feature_en[agg_or_trans].push(primitive);
+			feature_en['primitive_options'][primitive] = {'include_variables':{}};
+			feature_en['primitive_options'][primitive]['include_variables'] = {};
+			feature_en['primitive_options'][primitive]['include_variables'][entity] =[];
+			feature_en['primitive_options'][primitive]['include_variables'][entity].push(column);
+		}
+	else
+		{
+			if (!Object.keys(feature_en['primitive_options'][primitive]['include_variables']).includes(entity))
+			{
+				feature_en['primitive_options'][primitive]['include_variables'][entity] = [column];
+			}
+			else
+			{
+				feature_en['primitive_options'][primitive]['include_variables'][entity].push(column);
+			}
+		}
+	var content = "<tr><td class='border-0 p-0'><div class=\"alert "+'alert-success'+" alert-dismissible fade show text-center p-1\" role=\"alert\" style='margin-bottom:2px;'>"+primitive+"("+column+")"+"\
+  					<button type=\"button\" class=\"close close-1 p-0 pr-2\" data-dismiss=\"alert\" aria-label=\"Close\" onclick=update_feature_en('"+entity+"','"+column+"','"+primitive+"','"+agg_or_trans+"')>\
+    					<span aria-hidden=\"true\">&times;</span>\
+  					</button>\
+				</div></td></tr>";
+	$('#'+t_id).append(content);
+	//alert(JSON.stringify(feature_en));
+}
+
+
+function drop_down_populate(value='',populate={})
+{
+	if (value != '')
+	{
+		for (id of Object.keys(populate))
+		{
+			document.getElementById(id).innerHTML = '';
+			for (option of populate[id]) { addOption(id,option,option); }
+		}
+	}
+}
+
+function execute(to_call=[])
+{
+	for(func of to_call) { func; }
+}
+
+function get_columns(err_div,on_click_show=[],on_click_hide=[],after_res_show=[],after_res_hide=[],after_fail_show=[],after_fail_hide=[],to_enable=[],to_disable=[])
+{
+	if (Object.keys(datasets).length != 0)
+	{
+	click_add_remove(err_div,0);
+	$('.close-1').hide();
+	for (option of on_click_hide) { click_add_remove(option,0); }
+	for (option of on_click_show) { click_add_remove(option,1); }
+	var xhttp = new XMLHttpRequest();
+	xhttp.onreadystatechange = function() 
+		{
+  			if (this.readyState == 4 && this.status == 200) 
+				{
+					var json = JSON.parse(xhttp.responseText);
+					if (json['status']) 
+						{	
+							for (dataset of Object.keys(json['columns'])) 
+								{ 
+									datasets[dataset]=json['columns'][dataset];
+									addOption('parent_datasets',dataset,dataset); 
+								}
+							for (option of to_enable) { click_enable_disable(option,1); }
+							for (option of to_disable) { click_enable_disable(option,0); }
+							for (option of after_res_hide) { click_add_remove(option,0); } 
+							for (option of after_res_show) { click_add_remove(option,1); }
+							document.getElementById(err_div).setAttribute('class',"alert alert-success p-2 hidden");
+							document.getElementById(err_div).innerHTML = "Connected";
+							click_add_remove(err_div,1);
+							}
+					else
+						{
+							for (option of after_fail_hide) { click_add_remove(option,0); }
+							for (option of after_fail_show) { click_add_remove(option,1); }
+							document.getElementById(err_div).setAttribute('class',"alert alert-danger p-2 hidden");
+							document.getElementById(err_div).innerHTML = "Try Again!";
+							click_add_remove(err_div,1);
+						}
+  				}
+		};
+	xhttp.open("POST", "/get_attr",true);
+	xhttp.setRequestHeader("Content-type", "application/json");
+	xhttp.send(JSON.stringify({'key':'columns','value':{'schema':schema,'tables':Object.keys(datasets)}}));
+	}
+	else
+	{
+		document.getElementById(err_div).setAttribute('class',"alert alert-danger p-2 hidden");
+		document.getElementById(err_div).innerHTML = "Field(s) Empty!";
+		click_add_remove(err_div,1);
+	}
+}
+
+function add_table(self,err_div,on_click_show=[],on_click_hide=[],after_res_show=[],after_res_hide=[],after_fail_show=[],after_fail_hide=[],populate={})
+{
+	if(self.value != '')
+	{
+		schema = self.value;
+		click_add_remove(err_div,0);
+		for (option of on_click_show) { click_add_remove(option,1); }
+		var xhttp = new XMLHttpRequest();
+		xhttp.onreadystatechange = function() 
+			{
+  				if (this.readyState == 4 && this.status == 200) 
+					{
+						var json = JSON.parse(xhttp.responseText);
+						if (json['status']) 
+							{
+								for (option of after_res_hide) { click_add_remove(option,0); }
+								for(key of Object.keys(populate)) 
+								{
+									document.getElementById(key).innerHTML = '';
+									for (option of json[populate[key]]) { addOption(key,option,option); }
+								}
+								for (option of after_res_show) { click_add_remove(option,1); }
+								document.getElementById(err_div).setAttribute('class',"alert alert-success p-2 hidden");
+								document.getElementById(err_div).innerHTML = "Connected";
+								click_add_remove(err_div,1);
+							}
+						else
+							{
+								for (option of after_fail_hide) { click_add_remove(option,0); }
+								for (option of after_fail_show) { click_add_remove(option,1); }
+								document.getElementById(err_div).setAttribute('class',"alert alert-danger p-2 hidden");
+								document.getElementById(err_div).innerHTML = "Try Again!";
+								click_add_remove(err_div,1);
+							}
+  					}
+			};
+		xhttp.open("POST", "/get_attr",true);
+		xhttp.setRequestHeader("Content-type", "application/json");
+		xhttp.send(JSON.stringify({'key':'tables','value':self.value}));
+	}
+}
+
+function connect(ids,source,err_div,on_click_hide=[],on_click_show=[],after_res_hide=[],after_res_show=[],after_fail_hide=[],after_fail_show=[],to_enable=[],to_disable=[],populate={})
+{
+	if (validate(ids))
+	{
+		click_add_remove(err_div,0);
+		for (option of on_click_hide) { click_add_remove(option,0); }
+		for (option of on_click_show) { click_add_remove(option,1); }
+		var xhttp = new XMLHttpRequest();
+		xhttp.onreadystatechange = function() 
+			{
+  				if (this.readyState == 4 && this.status == 200) 
+					{
+						var json = JSON.parse(xhttp.responseText);
+						if (json['status'])
+						{
+							for (option of after_res_hide) { click_add_remove(option,0); }
+							for (option of after_res_show) { click_add_remove(option,1); }
+							for (option of to_enable) { click_enable_disable(option,1); }
+							for (option of to_disable) { click_enable_disable(option,0); }
+							for(key of Object.keys(populate)) 
+								{ 
+									for (option of json[populate[key]]) { addOption(key,option,option); }
+								}
+							document.getElementById(err_div).setAttribute('class',"alert alert-success p-2 hidden");
+							document.getElementById(err_div).innerHTML = "Connected";
+							click_add_remove(err_div,1);
+						}
+						else
+						{
+							for (option of after_fail_hide) { click_add_remove(option,0); }
+							for (option of after_fail_show) { click_add_remove(option,1); }
+							document.getElementById(err_div).setAttribute('class',"alert alert-danger p-2 hidden");
+							document.getElementById(err_div).innerHTML = "Try Again!";
+							click_add_remove(err_div,1);
+						}
+						
+  					}
+			};
+		xhttp.open("POST", "/connect", true);
+		xhttp.setRequestHeader("Content-type", "application/json");
+		xhttp.send(JSON.stringify({'source':'redshift','credentials':build_credentials(ids)}));
+	}
+	else
+	{
+		document.getElementById(err_div).setAttribute('class',"alert alert-danger p-2 hidden");
+		document.getElementById(err_div).innerHTML = "Field(s) Empty!";
+		click_add_remove(err_div,1);
+	}
+}
+
+function build_credentials(ids)
+{
+	var result = {};
+	for (elem of ids)
+	{
+		result[elem.split("_")[0]] = document.getElementById(elem).value;
+	}
+	return result;
+}
+
+function upload(file_field_id,table_id,on_click_hide=[],on_click_show=[],after_res_hide=[],after_res_show=[])
+{
+	for (option of on_click_hide) { click_add_remove(option,0); }
+	for (option of on_click_show) { click_add_remove(option,1); }
+	var form_data = new FormData();
+	form_data.append("file", document.getElementById(file_field_id).files[0]);
+	var xhttp = new XMLHttpRequest();
+	xhttp.onreadystatechange = function() 
+		{
+  			if (this.readyState == 4 && this.status == 200) 
+				{
+					var json = JSON.parse(xhttp.responseText);
+					var which = {true:'normal',false:'error'}
+					update_table(table_id,msg=json['msg'],which=which[json['status']],json['status']);
+					for (option of after_res_hide) { click_add_remove(option,0); }
+					for (option of after_res_show) { click_add_remove(option,1); }
+  				}
+		};
+	xhttp.open("POST", "/upload");
+	xhttp.send(form_data);
+}
+
+function update_object(object_name,name,status=true)
+{
+	if (status)
+		{
+			delete object_name[name];
+		}
+}
+
+function update_table(t_id,msg,which,status)
+{
+	var type = {'normal':'alert-success','error':'alert-danger'};
+	if (status) { datasets[msg] = []; }
+	var content = "<tr><td class='border-0 p-0'><div class=\"alert "+type[which]+" alert-dismissible fade show text-center p-1\" role=\"alert\" style='margin-bottom:2px;'>"+msg+"\
+  					<button type=\"button\" class=\"close close-1 p-0 pr-2\" data-dismiss=\"alert\" aria-label=\"Close\" onclick=update_object(datasets,'"+msg+"',"+status+")>\
+    					<span aria-hidden=\"true\">&times;</span>\
+  					</button>\
+				</div></td></tr>";
+	$('#'+t_id).append(content);
+}
+
+function validate(to_validate=[])
+{
+	for (elem of to_validate)
+	{
+		if (!document.getElementById(elem).value) { return false; }
+	}
+	return true;
+}
+
+function addOption(where,optionText,optionValue) 
+{ 
+	$("#"+where).append("<option value='"+optionValue+"'>"+optionText+"</option>");
+}
+
+function click_enable_disable(id,ver)
+{
+	if (ver == 0) { document.getElementById(id).setAttribute('disabled',true); }
+	else
+	{
+		document.getElementById(id).setAttribute('class',document.getElementById(id).className.split(' disabled')[0]);
+	}
+}
+
+function click_add_remove(id,ver)
+	{
+		if (ver == 0) 
+		{ 
+			document.getElementById(id).setAttribute('class',document.getElementById(id).className+' hidden');
+		}
+		else 
+		{
+			document.getElementById(id).setAttribute('class',document.getElementById(id).className.split(' hidden')[0]);
+		}
+	}
+</script>
+</body>
+</html>
