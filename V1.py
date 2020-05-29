@@ -3,12 +3,11 @@ from werkzeug.utils import secure_filename
 import os
 from con_util import *
 
-UPLOAD_FOLDER = '/home/rohit/Desktop/UI/uploads'
+UPLOAD_FOLDER = '/uploads'
 ALLOWED_EXTENSIONS = {'csv'}
 app = Flask(__name__)
-app.config['SECRET_KEY'] = 'dtreemlteam@2020'
+app.config['SECRET_KEY'] = #some secret key
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
-#'postgresql://dtree:Dtree1234@decisiontree.ca0fbmphxrad.us-east-1.redshift.amazonaws.com:5439/dev'
 
 def allowed_file(filename):
     return '.' in filename and \
