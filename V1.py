@@ -6,9 +6,8 @@ from con_util import *
 UPLOAD_FOLDER = '/home/rohit/Desktop/UI/uploads'
 ALLOWED_EXTENSIONS = {'csv'}
 app = Flask(__name__)
-app.config['SECRET_KEY'] = 'dtreemlteam@2020'
+app.config['SECRET_KEY'] = 'your_secret_key'
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
-#'postgresql://dtree:Dtree1234@decisiontree.ca0fbmphxrad.us-east-1.redshift.amazonaws.com:5439/dev'
 
 def allowed_file(filename):
     return '.' in filename and \
