@@ -239,80 +239,151 @@
 									<div class="tab-content">
 										<!-- PARENT TAB -->
   										<div class="tab-pane fade show active" id="parent" role="tabpanel" aria-labelledby="parent-tab">
-											<div class="row pr-3 pl-3 pt-3" style='height:310px;'>
-  												<div class="col-sm-6 h-100">
-    												<div class="card" style='height:278px;'>
-      													<div class="card-body">
-        													<div class="input-group mt-3">
+											<div class="row pr-3 pl-3 pt-2" style='height:310px;'>
+  												<div class="col-sm-6 h-100 m-auto">
+    												<div class="card border-0" style='height:292px;'>
+      													<div class="card-body pt-3">
+        													<div class="input-group mt-0">
   																<div class="input-group-prepend">
     																<span class="input-group-text">Data</span>
   																</div>
-  																<select class="form-control" id="parent_datasets" onchange="drop_down_populate(value=this.value,{'key_list':datasets[this.value],'target':datasets[this.value],'agg_by':datasets[this.value],'split_by':datasets[this.value],'columns_ft_transform':datasets[this.value]})">
+  																<select class="form-control" id="parent_datasets" onchange="drop_down_populate(value=this.value,{'key_list':datasets[this.value],'agg_by':datasets[this.value],'split_by':datasets[this.value],'columns_ft_transform':datasets[this.value], 'agg_div_custom_cols':datasets[this.value]},{'where_prim_cols':datasets[this.value]})">
 																	<option value=''>Select</option>
     															</select>
 															</div>
-															<div class="input-group mt-3">
+															<div class="input-group mt-2">
   																<div class="input-group-prepend">
     																<span class="input-group-text">Key</span>
   																</div>
   																<select class="form-control" id="key_list">
     															</select>
 															</div>
-															<div class="input-group mt-3">
-  																<div class="input-group-prepend">
-    																<span class="input-group-text">Target</span>
-  																</div>
-  																<select class="form-control" id="target">
-    															</select>
-															</div>
-															<div class="input-group mt-3">
+															<div class="input-group mt-2">
   																<div class="input-group-prepend">
     																<span class="input-group-text">max_depth</span>
   																</div>
   																<input id='max_depth' style='text-align:center;' type="number" value=2 class="form-control text-center" aria-describedby="basic-addon1">
 															</div>
-      													</div>
-    												</div>
-  												</div>
-  												<div class="col-sm-6 h-100">
-    												<div class="card" style='height:278px;'>
-      													<div class="card-body">
-															<div class="input-group mt-3">
-  																<div class="input-group-prepend">
-    																<span class="input-group-text">Agg</span>
-  																</div>
-  																<select class="form-control border-right-0" id="agg">
-																	<option value='N'>No</option>
-																	<option value='Y'>Yes</option>
-    															</select>
-																<div class="input-group-prepend">
-    																<span class="input-group-text">By</span>
-  																</div>
-																<select class="form-control" id="agg_by">
-    															</select>
+															<div class="input-group mt-2">
+																<button type="button" class="btn btn-info w-100" data-toggle="modal" data-target="#grouper-modal">GROUPER</button>
 															</div>
-   															<div class="input-group mt-3">
+															<div class="input-group mt-2">
 																<button type="button" class="btn btn-info w-100" data-toggle="modal" data-target="#train-modal">TRAINING WINDOW</button>
 															</div>
-															<div class="input-group mt-3">
+															<div class="input-group mt-2">
 																<div class='row pl-3'>
 																	<div class='col p-0'>
-																		<button type="button" class="btn btn-info" style='width:180px;' data-toggle="modal" data-target="#transform-modal">TRANSFORMS</button>
+																		<button type="button" id='transform_button' class="btn btn-info" style='width:180px;' data-toggle="modal" data-target="#transform-modal">TRANSFORMS</button>
 																	</div>
 																	<div class='col p-0' style='margin-left:54px;'>
 																		<button id='done_parent' onclick="parent_add()" type="button" class="btn btn-info" style='width:180px;'>DONE</button>
 																	</div>
 																</div>
 															</div>
-														    <div class="input-group mt-3">
-																<div class="alert alert-primary p-1 w-100" role="alert">
-  																	NOTE: Ignore <strong>By</strong> if <strong>Agg = No</strong>
-																</div>
-															</div>
       													</div>
     												</div>
   												</div>
 											</div>
+										</div>
+										<!-- GROUPER MODAL -->
+										<div class="modal fade" id="grouper-modal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  											<div class="modal-dialog" role="document">
+    											<div class="modal-content">
+      												<div class="modal-header">
+        												<h5 class="modal-title" id="exampleModalLabel">Grouper</h5>
+        												<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          													<span aria-hidden="true">&times;</span>
+        												</button>
+      												</div>
+      												<div class="modal-body">
+													<div class="input-group">
+  														<div class="input-group-prepend">
+    															<span class="input-group-text">aggregate</span>
+  														</div>
+  														<select class="form-control" id="agg" onchange="drop_down_select(this.value,{'Y':{'Y':['by_div','units_div','where_div','agg_div','agg_div_default'],'N':[],'E':[],'D':['transform_button']},'N':{'N':['by_div','units_div','where_div','operation_div','where_cols_div','agg_div','agg_div_default','agg_div_custom'],'Y':[],'E':['transform_button'],'D':[]}},[set('where_clause','N'),set('agg_type','default')])">
+															<option value='N'>No</option>
+															<option value='Y'>Yes</option>
+    													</select>
+													</div>
+													<div class="input-group mt-2 hidden" id='by_div'>
+  														<div class="input-group-prepend">
+    															<span class="input-group-text">by</span>
+  														</div>
+  														<select class="form-control" id="agg_by">
+    													</select>
+													</div>
+													<div class="input-group mt-2 hidden" id='units_div'>
+  														<div class="input-group-prepend">
+    															<span class="input-group-text">units</span>
+  														</div>
+  														<input id='units' style='text-align:center;' type="number" value=1 class="form-control text-center" aria-describedby="basic-addon1">
+													</div>
+													<div class="input-group mt-2 hidden" id='agg_div'>
+  														<div class="input-group-prepend">
+    															<span class="input-group-text">aggregations</span>
+  														</div>
+  														<select class="form-control" id='agg_type' onchange="drop_down_select(this.value,{'default':{'Y':['agg_div_default'],'N':['agg_div_custom'],'E':[],'D':[]},'custom':{'N':['agg_div_default'],'Y':['agg_div_custom'],'E':[],'D':[]}},[set('where_clause','N')])">
+															<option value='default'>default</option>
+															<option value='custom'>custom</option>
+    													</select>
+													</div>
+													<div class="input-group mt-3 hidden" id='agg_div_default'>
+  														<select multiple="multiple" class='multi-select' id='agg_div_default_ms'>
+															<option selected='selected' value='sum'>sum</option>
+															<option selected='selected' value='std'>std</option>
+															<option selected='selected' value='max'>max</option>
+															<option selected='selected' value='skew'>skew</option>
+															<option selected='selected' value='min'>min</option>
+															<option selected='selected' value='mean'>mean</option>
+															<option selected='selected' value='count'>count</option>
+															<option selected='selected' value='percent_true'>percent_true</option>
+															<option selected='selected' value='num_unique'>num_unique</option>
+															<option selected='selected' value='mode'>mode</option>
+    													</select>
+													</div>
+													<div class="input-group mt-3 hidden" id='agg_div_custom'>
+															<div class='col p-0'>
+																<select class="form-control w-100" id="agg_div_custom_cols">
+    															</select>
+															</div>
+															<div class='col p-0 pl-2'>
+																<select class="form-control w-100" id="agg_div_custom_agg">
+    															</select>
+															</div>
+															<div class='col p-0 pl-2'>
+																<button onclick="update_table_ft(t_id='t4',entity=document.getElementById('parent_datasets').value,column=document.getElementById('agg_div_custom_cols').value,primitive=document.getElementById('agg_div_custom_agg').value,agg_or_trans='agg_primitives')" type="button" class="btn btn-info w-100">ADD</button>
+															</div>
+															<table class="table table-sm w-100 mt-2 mb-0">
+																<tbody id='t4'>
+																</tbody>
+															</table>
+													</div>
+													<div class="input-group mt-2 hidden" id='where_div'>
+  														<div class="input-group-prepend">
+    															<span class="input-group-text">where_clause</span>
+  														</div>
+  														<select class="form-control" id="where_clause" onchange="drop_down_select(this.value,{'Y':{'Y':['operation_div','where_cols_div'],'N':[],'E':[],'D':[]},'N':{'N':['operation_div','where_cols_div'],'Y':[],'E':[],'D':[]}})">
+															<option value='N'>No</option>
+															<option value='Y'>Yes</option>
+    													</select>
+													</div>
+													<div class="input-group mt-3 hidden" id='where_cols_div'>
+  														<select multiple="multiple" id='where_prim_cols' class='multi-select'>
+    													</select>
+													</div>
+													<div class="input-group mt-3 hidden" id='operation_div'>
+  														<div class="input-group-prepend">
+    															<span class="input-group-text">operation</span>
+  														</div>
+  														<select class="form-control" id="where_clause">
+															<option value='count'>COUNT</option>
+															<option value='sum'>SUM</option>
+															<option value='mean'>MEAN</option>
+    													</select>
+													</div>
+      												</div>
+    											</div>
+  											</div>
 										</div>
 										<!-- TRAIN-WINDOW MODAL -->
 										<div class="modal fade" id="train-modal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
@@ -564,10 +635,16 @@ var datasets = {};
 var default_transform_primitives = ['day', 'year', 'month', 'weekday', 'haversine', 'num_words', 'num_characters'];
 var default_agg_primitives = ['sum', 'std', 'max', 'skew', 'min', 'mean', 'count', 'percent_true', 'num_unique', 'mode'];
 var all_transform_primitives = ['absolute', 'and', 'multiply_numeric_scalar', 'negate', 'not_equal', 'year', 'cum_min', 'greater_than', 'haversine', 'less_than_equal_to_scalar', 'minute', 'modulo_numeric', 'subtract_numeric_scalar', 'time_since', 'greater_than_equal_to_scalar', 'is_weekend', 'multiply_boolean', 'not', 'not_equal_scalar', 'or', 'time_since_previous', 'cum_max', 'equal', 'greater_than_scalar', 'isin', 'modulo_numeric_scalar', 'scalar_subtract_numeric_feature', 'week', 'cum_sum', 'day', 'divide_numeric', 'add_numeric', 'less_than', 'percentile', 'weekday', 'diff', 'equal_scalar', 'greater_than_equal_to', 'is_null', 'modulo_by_feature', 'month', 'multiply_numeric', 'add_numeric_scalar', 'divide_numeric_scalar', 'cum_count', 'hour', 'latitude', 'less_than_scalar', 'num_characters', 'cum_mean', 'divide_by_feature', 'less_than_equal_to', 'longitude', 'num_words', 'second', 'subtract_numeric'];
+var all_aggregation_primitives = ['all', 'n_most_common', 'sum', 'first', 'num_unique', 'mean', 'time_since_last', 'avg_time_between', 'last', 'num_true', 'mode', 'time_since_first', 'median', 'count', 'any', 'percent_true', 'skew', 'min', 'trend', 'entropy', 'max', 'std'];
 for (option of all_transform_primitives)
 	{
 		if (!default_transform_primitives.includes(option)) { addOption('ft-transform',option,option); }
 		addOption('parent_ft_transforms',option,option);
+	}
+for (option of all_aggregation_primitives)
+	{
+		if (!default_agg_primitives.includes(option)) { addOption('agg_div_default_ms',option,option); }
+		addOption('agg_div_custom_agg',option,option);
 	}
 var json = {};
 
@@ -577,6 +654,7 @@ $('#ft-transform').multiSelect({
   		afterSelect: function(value){ afterSelect('ft-transform',value); },
   		afterDeselect: function(value){ afterDeselect('ft-transform',value); }
 		})
+$('.multi-select').multiSelect({cssClass:'m-auto'});
 
 function afterSelect(id,value)
 	{
@@ -598,10 +676,10 @@ function afterDeselect(id,value)
 	if($('#'+id).val().length == 0) { $('#'+id).multiSelect('select',"*"); }
 }
 
-var feature_en = {};
+var feature_en = {'trans_primitives':[],'agg_primitives':[],'where_prmitives':[],'primitive_options':{}};
 function initiate_feature_en()
 {
-	feature_en = {'trans_primitives':[],'primitive_options':{}};
+	feature_en = {'trans_primitives':[],'agg_primitives':[],'where_prmitives':[],'primitive_options':{}};
 }
 
 function generate_and_add_child(ver)
@@ -612,7 +690,8 @@ function generate_and_add_child(ver)
 
 function parent_add()
 {
-	var to_validate = ['parent_datasets','key_list','target','agg','agg_by','max_depth'];
+	var to_validate = ['parent_datasets','key_list','agg','agg_by','max_depth'];
+	if(document.getElementById('agg').value == 'Y') { to_validate.push('units'); }
 	if(document.getElementById('ratio').checked) { to_validate.push('ratio-val'); }
 	else { to_validate.push('train_window_1','train_window_2'); }
 	if(validate(to_validate))
@@ -630,6 +709,10 @@ function parent_add()
 		}
 		if (Object.keys(datasets).length > 1)
 		{
+			for(dataset of Object.keys(datasets))
+			{
+				if (dataset != document.getElementById('parent_datasets').value) { addOption('child_datasets',dataset,dataset); }
+			}
 			alert('There are Child datasets!');
 		}
 	}
@@ -651,9 +734,21 @@ function del_elem(arr,elem)
 
 function update_feature_en(entity,column,primitive,agg_or_trans)
 {
-	feature_en[agg_or_trans] = del_elem(feature_en[agg_or_trans],primitive);
-	feature_en['primitive_options'][primitive]['include_variables'][entity] = del_elem(feature_en['primitive_options'][primitive]['include_variables'][entity],column);
-	//alert(JSON.stringify(feature_en));
+	var local_ctr = 0;
+	feature_en['primitive_options'][primitive]['include_variables'][entity] = del_elem(feature_en['primitive_options'][primitive]['include_variables'][entity],decodeURIComponent(column));
+
+	for (entity of Object.keys(feature_en['primitive_options'][primitive]['include_variables']))
+	{
+		if (feature_en['primitive_options'][primitive]['include_variables'][entity].length > 0) { local_ctr = local_ctr+1; }
+	}
+
+	if (local_ctr == 0) //No columns involved in any of the entities
+	{
+		feature_en[agg_or_trans] = del_elem(feature_en[agg_or_trans],primitive);
+		
+	}
+
+	alert(JSON.stringify(feature_en));
 }
 
 function update_table_ft(t_id,entity,column,primitive,agg_or_trans)
@@ -677,17 +772,39 @@ function update_table_ft(t_id,entity,column,primitive,agg_or_trans)
 				feature_en['primitive_options'][primitive]['include_variables'][entity].push(column);
 			}
 		}
-	var content = "<tr><td class='border-0 p-0'><div class=\"alert "+'alert-success'+" alert-dismissible fade show text-center p-1\" role=\"alert\" style='margin-bottom:2px;'>"+primitive+"("+column+")"+"\
-  					<button type=\"button\" class=\"close close-1 p-0 pr-2\" data-dismiss=\"alert\" aria-label=\"Close\" onclick=update_feature_en('"+entity+"','"+column+"','"+primitive+"','"+agg_or_trans+"')>\
-    					<span aria-hidden=\"true\">&times;</span>\
-  					</button>\
-				</div></td></tr>";
+	var content = "\
+					<tr>\
+						<td class='border-0 p-0'><div class=\"alert "+'alert-success'+" alert-dismissible fade show text-center p-1\" role=\"alert\" style='margin-bottom:2px;'>"+primitive+"("+column+")"+"\
+  						<button type=\"button\" class=\"close close-1 p-0 pr-2\" data-dismiss=\"alert\" aria-label=\"Close\" onclick=update_feature_en('"+entity+"','"+encodeURIComponent(column)+"','"+primitive+"','"+agg_or_trans+"')>\
+    						<span aria-hidden=\"true\">&times;</span>\
+  						</button>\
+						</td>\
+					</tr>";
 	$('#'+t_id).append(content);
-	//alert(JSON.stringify(feature_en));
+	alert(JSON.stringify(feature_en));
 }
 
+function set(id,value)
+{
+	document.getElementById(id).value = value;
+}
 
-function drop_down_populate(value='',populate={})
+function execute(to_call=[])
+{
+	for(func of to_call) { func; }
+}
+
+function drop_down_select(value, options={}, to_call=[])
+{
+	var mtr = options[value];
+	for(id of mtr['Y']) { click_add_remove(id,1); }
+	for(id of mtr['N']) { click_add_remove(id,0); }
+	for(id of mtr['D']) { click_enable_disable(id,0); }
+	for(id of mtr['E']) { click_enable_disable(id,1); }
+	execute(to_call);
+}
+
+function drop_down_populate(value='',populate={},spl_populate={})
 {
 	if (value != '')
 	{
@@ -696,12 +813,12 @@ function drop_down_populate(value='',populate={})
 			document.getElementById(id).innerHTML = '';
 			for (option of populate[id]) { addOption(id,option,option); }
 		}
+		for (id of Object.keys(spl_populate))
+		{
+			document.getElementById(id).innerHTML = '';
+			for (option of spl_populate[id]) { $('#'+id).multiSelect('addOption', { value: option, text: option}); }
+		}
 	}
-}
-
-function execute(to_call=[])
-{
-	for(func of to_call) { func; }
 }
 
 function get_columns(err_div,on_click_show=[],on_click_hide=[],after_res_show=[],after_res_hide=[],after_fail_show=[],after_fail_hide=[],to_enable=[],to_disable=[])
@@ -915,11 +1032,8 @@ function addOption(where,optionText,optionValue)
 
 function click_enable_disable(id,ver)
 {
-	if (ver == 0) { document.getElementById(id).setAttribute('disabled',true); }
-	else
-	{
-		document.getElementById(id).setAttribute('class',document.getElementById(id).className.split(' disabled')[0]);
-	}
+	var map = {0:true,1:false};
+	document.getElementById(id).disabled = map[ver];
 }
 
 function click_add_remove(id,ver)
